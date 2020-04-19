@@ -4,6 +4,7 @@ import traceback
 from agent import Agent
 from model import Model
 from agentUCS import AgentUCS
+from agentA import AgentA
 from modelExt import ModelExt
 import os
 
@@ -16,8 +17,8 @@ envs = [
 
 agents = [
     #(Agent, "InputAgent")
-    (AgentUCS, "UCS")
-    #(AgentA, "A"),
+    #(AgentUCS, "UCS")
+    (AgentA, "A"),
     #(AgentLRTA, "LRTA"),
 ]
 

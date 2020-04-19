@@ -19,16 +19,14 @@ class Agent():
         all_rewards = 0
         
         while not done:  
-            self.model.map_obs_to_state(env.observation)
             action = self.next_action(step_counter, env)
             self.check_action(action)
             obs, reward, done_env, _ = env.step(action)
             all_rewards += reward
             done = done_env and self.model.is_win_goal()
-            #print(self.model.diccionary)
-            #self.model.map_obs_to_state(obs)
             env.render()
             step_counter += 1
+        
         return all_rewards, step_counter
 
     def next_action(self, step_counter, env):

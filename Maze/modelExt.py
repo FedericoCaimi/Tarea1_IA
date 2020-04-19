@@ -21,3 +21,9 @@ class ModelExt(Model):
                 diccionary[estado+evento] = estadoSig
         return diccionary
 
+    #modificar para que no dependa del tamaño del laberinto o que obtenga el tamaño por parametros
+    def map_obs_to_state(self,obs):
+        x = obs[0]
+        y = obs[1]
+        estado = (y*9)+y+x
+        return estado

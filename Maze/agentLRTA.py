@@ -8,6 +8,7 @@ class AgentLRTA():
     def __init__(self, model):
         super().__init__()
         self.model = model
+        self.goalId = None
 
     def run(self, env):
         self.model.reset()
@@ -25,7 +26,7 @@ class AgentLRTA():
         while not done:  
 
             actualState = self.model.map_obs_to_state(env.observation)
-            goalId = self.model.get_goal(step_counter)[0]
+            self.goalId = self.model.get_goal(step_counter)[0]
 
             action = self.LRTA(actualState,action,lastState)
             obs, reward, done_env, _ = env.step(action)
@@ -45,7 +46,7 @@ class AgentLRTA():
     def LRTA(self,actualState,action,lastState):
         actions = ['N','E','S','W']
 
-        if (actualState == goalId):
+        if (actualState == self.goalId):
             break
         if not(actualState in H ):
             HVal = h(actualState)#falta funcion heuristica 
@@ -80,6 +81,7 @@ class AgentLRTA():
         else:
             return 1 +H[actualState]
 
-
+    def h(self, state):
+        return self.model.h(state, self.goalId)
 
     

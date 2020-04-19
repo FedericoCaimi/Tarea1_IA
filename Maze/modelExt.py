@@ -27,3 +27,20 @@ class ModelExt(Model):
         y = obs[1]
         estado = (y*9)+y+x
         return estado
+
+    #heuristica de distancia entre el estad actual y el objetivo 
+    def h(self,actualState, goal):
+        y = 0
+        x = 0
+        exitY = abs(actualState-goal)
+        while exitY >= 10:
+            y += 1
+            if((actualState-goal) > 0):
+                actualState -= 10
+            else:
+                actualState += 10
+            exitY = abs(actualState-goal)
+        x = abs(actualState-goal)
+
+        return y+x
+

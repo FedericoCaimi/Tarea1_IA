@@ -30,8 +30,6 @@ class ModelExt(Model):
 
     #heuristica de distancia entre el estad actual y el objetivo 
     def h(self,actualState, goal):
-        print(actualState)
-        print(goal)
         y = 0
         x = 0
         exitY = abs(actualState-goal)

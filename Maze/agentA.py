@@ -39,14 +39,14 @@ class AgentA(Agent):
             self.goal = goalId
             self.sequence = self.getSequence(self.actualPosition, self.goal)
             a = self.sequence
-            print(a)
+            #print(a)
             self.sequenceStep = 0
         
         if(self.sequenceStep + 1 < len(self.sequence)):
             self.actualPosition = self.sequence[self.sequenceStep + 1][0]
         _return = self.sequence[self.sequenceStep][1]
         self.sequenceStep += 1
-        print(self.actualPosition)
+        #print(self.actualPosition)
         time.sleep(0.5)
         return _return
 

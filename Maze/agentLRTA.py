@@ -1,6 +1,8 @@
+from agent import Agent
 from abc import ABC, abstractmethod
 from queue import PriorityQueue
 from queue import Queue
+import time
 
 #DO NOT CHANGE THIS CLASS: EXTEND IT WITH YOUR OWN
 class AgentLRTA():
@@ -9,6 +11,11 @@ class AgentLRTA():
         super().__init__()
         self.model = model
         self.goalId = None
+        self.sequenceStep = None
+        self.sequence = None
+        self.actualPosition = 0
+        self.H = {}
+        self.result = {}
 
     def run(self, env):
         self.model.reset()
@@ -22,18 +29,16 @@ class AgentLRTA():
         all_rewards = 0
         lastState = None
         action = ''
-        H = []
         while not done:  
-
             actualState = self.model.map_obs_to_state(env.observation)
             self.goalId = self.model.get_goal(step_counter)[0]
-
-            action = self.LRTA(actualState,action,lastState)
+            env.set_goal(self.goalId)
+            action, lastState = self.LRTA(actualState,action,lastState)
             obs, reward, done_env, _ = env.step(action)
             all_rewards += reward
             done = done_env and self.model.is_win_goal()
             env.render()
-            step_counter += 1
+            step_counter += 1.
         return all_rewards, step_counter
 
 
@@ -44,26 +49,32 @@ class AgentLRTA():
         return self.model.diccionary[nodeAction],actionCost
 
     def LRTA(self,actualState,action,lastState):
-        actions = ['N','E','S','W']
-
+        actions = ['S','E','W','N']
+        costsList = []
         if (actualState == self.goalId):
-            break
-        if not(actualState in H ):
-            HVal = h(actualState)#falta funcion heuristica 
-            H[actualState] = HVal
+            return None
+        if not(actualState in self.H ):
+            HVal = self.h(actualState)
+            self.H[actualState] = HVal
         if (not(lastState == None)):
-            result[lastState+action] = actualState
+            self.result[str(lastState)+action] = actualState
             costsList = []
             for action in actions:
-                cost = self.LRTACost(lastState,action,result[lastState+action],H)
+                stateAction = str(lastState)+action
+                if(not(stateAction in self.result)):
+                    self.result[stateAction] = None
+                cost = self.LRTACost(lastState,action,self.result[str(lastState)+action],self.H)
                 costsList.append(cost)
-            H[lastState] = min(costsList)
+            self.H[lastState] = min(costsList)
         returnAction = None
         minCost = 0
         #cual de las acciones tiene menor costo, la cual sera la que se va a ejecutar en el ambiene 
         for action in actions:
-            cost = self.LRTACost(actualState,action,result[actualState+action],H)
-            #guardo el priemr costo para comparar
+            cost = 0
+            stateAction = str(actualState)+action
+            if(not(stateAction in self.result)):
+                self.result[stateAction] = None
+            cost = self.LRTACost(actualState,action,self.result[stateAction],self.H)
             if(returnAction == None):
                 minCost = cost
                 returnAction = action
@@ -73,11 +84,11 @@ class AgentLRTA():
             costsList.append(cost)
         lastState = actualState
 
-        return returnAction
+        return returnAction, lastState
 
     def LRTACost(self,lastState,action,actualState,H):
         if (actualState == None):
-            return h(lastState)#falta funcion heuristica 
+            return self.h(lastState)
         else:
             return 1 +H[actualState]
 

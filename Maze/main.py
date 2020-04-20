@@ -5,6 +5,7 @@ from agent import Agent
 from model import Model
 from agentUCS import AgentUCS
 from agentA import AgentA
+from agentLRTA import AgentLRTA
 from modelExt import ModelExt
 import os
 
@@ -18,8 +19,8 @@ envs = [
 agents = [
     #(Agent, "InputAgent")
     #(AgentUCS, "UCS")
-    (AgentA, "A"),
-    #(AgentLRTA, "LRTA"),
+    #(AgentA, "A"),
+    (AgentLRTA, "LRTA")
 ]
 
 models = [

@@ -13,11 +13,12 @@ class Agent():
 
     def loop(self, env):
         print("Play manually...")
-        env.render()
+        obs = env.reset()
         done = False
         step_counter = 0
         all_rewards = 0
-        
+        env.render()
+
         while not done:  
             action = self.next_action(step_counter, env)
             self.check_action(action)

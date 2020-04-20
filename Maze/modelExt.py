@@ -1,10 +1,21 @@
 from model import Model
 
 class ModelExt(Model):
-    def __init__(self, filename):
-        super().__init__()
+    def __init__(self, model_file):
+        super().__init__(model_file)
         self.reset()
+        relative_path = 'gym_maze/envs/maze_samples/'
+        filename = relative_path + model_file
         self.diccionary = self.createDiccionaryFormFile(filename)
+        self.x, self.y = self.positionXY(model_file)
+
+    def positionXY(self, model_file):
+        posv = model_file.find('v')
+        posx = model_file.find('x')
+        posG =  model_file.find('_')
+        x = model_file[posv+1:posx]
+        y = model_file[posx+1:posG]
+        return x, y
 
     def createDiccionaryFormFile(self, filename):
         diccionary = {}
@@ -25,7 +36,7 @@ class ModelExt(Model):
     def map_obs_to_state(self,obs):
         x = obs[0]
         y = obs[1]
-        estado = (y*9)+y+x
+        estado = (y*(int(self.x)-1))+y+x
         return estado
 
     #heuristica de distancia entre el estad actual y el objetivo 
@@ -33,12 +44,12 @@ class ModelExt(Model):
         y = 0
         x = 0
         exitY = abs(actualState-goal)
-        while exitY >= 10:
+        while exitY >= int(self.x):
             y += 1
             if((actualState-goal) > 0):
-                actualState -= 10
+                actualState -= int(self.x)
             else:
-                actualState += 10
+                actualState += int(self.x)
             exitY = abs(actualState-goal)
         x = abs(actualState-goal)
 

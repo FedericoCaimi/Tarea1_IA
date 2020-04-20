@@ -8,14 +8,12 @@ class MazeEnvExtended(MazeEnv):
     
     def __init__(self, *args, **kwargs):
         super(MazeEnvExtended, self).__init__(*args, **kwargs)
-        self.trace=False
+        self.trace = False
         self.trace_count = np.zeros(self.maze_size, dtype=int)
 
     def reset(self):
-        self.reset_trace()
+        self.reset_trace()  
         return super()._reset()
-        #super()._reset()
-        #self.reset_trace()  
      
     def should_trace_location(self, trace):
         self.trace = trace
@@ -27,14 +25,10 @@ class MazeEnvExtended(MazeEnv):
                 self._draw_trace(np.array([i,j]))   
 
     def step(self, action):
-        
         prev_obs = np.array(self.observation)
 
         obs, reward, done, info = super()._step(action)
-        
-        #print(obs,type(self.observation))
-        #print(obs[0],type(self.observation))
-        #print(obs[1],type(self.observation))
+
         if (prev_obs is not None
                 and not(np.array_equal(self.observation_space, prev_obs)) 
                 and self.trace):
@@ -54,7 +48,3 @@ class MazeEnvExtended(MazeEnv):
 
     def set_goal(self, goalId):
         self.maze_view.set_goal(goalId)
-
-class MazeEnv10x10_1(MazeEnvExtended):
-    def __init__(self):
-        super().__init__(maze_file="Maze10x10_1.npy")

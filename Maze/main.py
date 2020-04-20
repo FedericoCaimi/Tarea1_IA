@@ -1,30 +1,29 @@
-import mazeEnvExtended
 import time
 import traceback
+
+from mazeEnvExtended import MazeEnvExtended
 from agent import Agent
-from model import Model
+from modelExample import ModelExample
 from agentUCS import AgentUCS
 from agentA import AgentA
 from agentLRTA import AgentLRTA
 from modelExt import ModelExt
-import os
 
-dirname = os.path.dirname(__file__)
-filename = os.path.join(dirname, 'gym_maze\envs\maze_samples\Maze10x10_1.txt')
 
 envs = [
-    (mazeEnvExtended.MazeEnv10x10_1, "MazeEnv10x10_1")
+    (MazeEnvExtended, "MazeEnv10x10_1"),
+    (MazeEnvExtended, "MazeEnv10x10_2")
 ]
 
 agents = [
     #(Agent, "InputAgent")
-    #(AgentUCS, "UCS")
-    #(AgentA, "A"),
+    (AgentUCS, "UCS"),
+    (AgentA, "A"),
     (AgentLRTA, "LRTA")
 ]
 
 models = [
-    #(Model, "GoalModel"),
+    #(ModelExample, "GoalModel"),
     (ModelExt, "GoalModelExt")
 ]
 
@@ -35,7 +34,7 @@ def main():
             for model, m_name in models:
                 print(e_name, a_name, m_name)
                 try:  
-                    run(env(), agent(model(filename)))
+                    run(env(maze_file=e_name + ".npy"), agent(model(model_file = e_name + ".txt")))
                 except Exception as e:
                     print(str(e))
                     print(traceback.format_exc())
@@ -62,5 +61,3 @@ def _prepare_env(env):
 
 if __name__ == "__main__":
     main()
-
-

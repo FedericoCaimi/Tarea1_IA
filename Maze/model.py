@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 #DO NOT CHANGE THIS CLASS: EXTEND IT WITH YOUR OWN
 class Model(ABC):
 
-    def __init__(self):
+    def __init__(self, model_file):
         super().__init__()
         self.reset()
 
@@ -26,3 +26,4 @@ class Model(ABC):
         if self.current_goal == None:
             return False
         return self.current_goal[1]
+

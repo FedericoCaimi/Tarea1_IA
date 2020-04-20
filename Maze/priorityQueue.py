@@ -38,7 +38,7 @@ class PriorityQueue():
     def __contains__(self, key):
         list_of_items = [(x[0]) for x in self.queue]
         return (key) in list_of_items
-
+    
     def getCost(self, key):
         list_of_items = []
         for i in range(len(self.queue)):

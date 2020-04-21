@@ -11,15 +11,17 @@ from modelExt import ModelExt
 
 
 envs = [
-    (MazeEnvExtended, "MazeEnv10x10_1"),
-    (MazeEnvExtended, "MazeEnv10x10_2")
+    #(MazeEnvExtended, "MazeEnv10x10_1"),
+    #(MazeEnvExtended, "MazeEnv10x10_2"),
+    (MazeEnvExtended, "MazeEnv20x20"),
+    (MazeEnvExtended, "MazeEnv25x25")
 ]
 
 agents = [
     #(Agent, "InputAgent")
     (AgentUCS, "UCS"),
     (AgentA, "A"),
-    (AgentLRTA, "LRTA")
+    #(AgentLRTA, "LRTA")
 ]
 
 models = [

@@ -593,8 +593,9 @@ class Portal:
 
 if __name__ == "__main__":
 
-    maze = MazeView2D(screen_size= (500, 500), maze_size=(10,10), has_loops=True)
-    path = "MazeGenerated.npy"
+    maze = MazeView2D(screen_size= (500, 500), maze_size=(25,25), has_loops=True)
+    #path = "MazeGenerated.npy"
+    path = "MazeEnv25x25"
     maze.maze.save_maze(path)
     print("Maze .npy file saved at", path)
     maze.save_maze_for_model(path)

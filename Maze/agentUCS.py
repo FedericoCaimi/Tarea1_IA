@@ -1,103 +1,98 @@
-from abc import ABC, abstractmethod
-from queue import PriorityQueue
+from agent import Agent
 from priorityQueue import PriorityQueue
+from abc import ABC, abstractmethod
 import time
-#from queue import Queue
 
-#DO NOT CHANGE THIS CLASS: EXTEND IT WITH YOUR OWN
-class AgentUCS():
+class AgentUCS(Agent):
 
     def __init__(self, model):
-        super().__init__()
-        self.model = model
-
-    def run(self, env):
-        self.model.reset()
-        return self.loop(env)
+        super().__init__(model)
+        self.goal = None
+        self.sequenceStep = None
+        self.sequence = None
+        self.actualPosition = 0
 
     def loop(self, env):
-        print("UCS...")
+        print("Play AgentUCS...")
         env.render()
         done = False
         step_counter = 0
         all_rewards = 0
-        initialState = 0
+        
         while not done:  
-            goalId = self.model.get_goal(step_counter)[0]
-            actions = ['N','E','S','W']
-            resultado = self.searchUCS(initialState,goalId,actions)
-            camino = []
-            camino = self.camino(resultado,initialState,str(goalId))
-            
-            for i in range(len(camino)):
-                time.sleep(0.5)
-                goalIdNow = self.model.get_goal(step_counter)[0]
-                env.set_goal(goalIdNow)
-                if goalIdNow != goalId:
-                    nodeAction = str(actionEstado[1])+actionEstado[0]
-                    initialState = self.model.diccionary[nodeAction]
-                    break
-                actionEstado = camino.pop()
-                self.check_action(actionEstado[0])
-                obs, reward, done_env, _ = env.step(actionEstado[0])
-                all_rewards += reward
-                done = done_env and self.model.is_win_goal()
-                env.render()
-                step_counter += 1
+            action = self.next_action(step_counter, env)
+            self.check_action(action)
+            obs, reward, done_env, _ = env.step(action)
+            all_rewards += reward
+            done = done_env and self.model.is_win_goal()
+            env.render()
+            step_counter += 1
+        
         return all_rewards, step_counter
 
     def next_action(self, step_counter, env):
         goalId = self.model.get_goal(step_counter)[0]
         env.set_goal(goalId)
-        return input()
 
-    def check_action(self, action):
-        if action not in ['N','E','S','W']:
-            raise ValueError("Run Ended - Invalid Action")
+        if(self.goal != goalId):
+            self.goal = goalId
+            self.sequence = self.getSequence(self.actualPosition, self.goal)
+            self.sequenceStep = 0
+        
+        if(self.sequenceStep + 1 < len(self.sequence)):
+            self.actualPosition = self.sequence[self.sequenceStep + 1][0]
+        else:
+            self.actualPosition = self.goal
+        _return = self.sequence[self.sequenceStep][1]
+        self.sequenceStep += 1
+        return _return
 
-    def step(self,node,action):
-        estado = node[0]
-        nodeAction = str(estado)+action
-        actionCost = 1
-        return self.model.diccionary[nodeAction],actionCost
+    def getSequence(self, position, goal):
+        dictionary = self.performUCS(position, goal)
+        actualNode = goal
+        sequence = []
+        while(actualNode != position):
+            previousNode = dictionary[actualNode]
+            sequence.append(previousNode)
+            actualNode = previousNode[0]
+        
+        sequence.reverse()
+        return sequence
 
-    def searchUCS(self,initialState, goal, actions):
+    def performUCS(self, position, goal):
         to_explore = PriorityQueue()
         explored = set()
-        prevNode = dict()
-        prevNode[initialState] = None
-        to_explore.push(initialState,0)
+        prevNode = dict({position: 0})
+
+        to_explore.push(position, 0)
+
         while (not(to_explore.is_empty())):
-            node = to_explore.pop()#get()
+            aux = to_explore.pop()
+            node = aux[0]
+            prevCost = aux[1]
             to_explore.remove(node)
-            if (node[0] == str(goal)):
-                return prevNode #node, prevNode
-            explored.add(node[0])
+            if (goal == node):
+                return prevNode
+            explored.add(node)
+
+            actions = ['N','S','E','W']
 
             for action in actions:
                 child, actionCost = self.step(node, action)
-                cost = node[1] + actionCost
-                booleano = child in to_explore
-                if not(child in explored or child in to_explore):
-                    to_explore.push(child,cost)
-                    prevNode[child] = str(node[0])+action
-                elif (child in to_explore and cost < to_explore.getCost(child)):
-                    to_explore.update(child, cost)
-                    prevNode[child] = str(node[0])+action
+                if not(child == node):
+                    cost = prevCost + actionCost
+                    if not(child in explored or child in to_explore):
+                        to_explore.push(child, cost)
+                        prevNode[child] = (node, action)
+                    elif child in to_explore and cost < to_explore.getCost(child):
+                        to_explore.update(child, cost)
+                        prevNode[child] = (node, action)
         return None
-    #obtengo el resultado 
-    def camino(self,dicc,initialState,goal):
-        done = False
-        stack = []
-        while not done:
-            stateAction = dicc[goal]
-            state = stateAction[0:len(stateAction)-1]
-            action = stateAction[len(stateAction)-1:len(stateAction)]
-            goal = state
-            stack.append([action,state])
-            if (state == str(initialState)):
-                done = True
-        return stack
+
+    def step(self, node, action):
+        nodeAction = str(node)+action
+        actionCost = 1
+        return int(self.model.diccionary[nodeAction]),actionCost
 
        
 

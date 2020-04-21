@@ -9,11 +9,11 @@ class Model(ABC):
 
     def get_goal(self, step):
         GOALS = { 
-            0: (29, False),
-            5: (80, False),
+            0: (19, False),
+            #5: (80, False),
             10: (9, False),
-            15: (85, False),
-            20: (99, True)
+            15: (129, False),
+            20: (399, True)
         }
         self.current_goal = GOALS.get(step, self.current_goal) 
 
